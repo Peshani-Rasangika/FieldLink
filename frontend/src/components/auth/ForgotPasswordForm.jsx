@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 const ForgotPasswordForm = () => {
   const navigate = useNavigate();
 
+  const [email, setEmail] = React.useState("");
+
   const verifyEmail = () => {
     navigate("/otp", { state: { next: "/reset-password" } });
   };
@@ -16,8 +18,11 @@ const ForgotPasswordForm = () => {
       <div className="space-y-4">
         <input
           className="rounded-lg p-3 w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          type="text"
+          type="email"
           placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <button
           onClick={verifyEmail}
