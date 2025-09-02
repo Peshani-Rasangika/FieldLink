@@ -9,8 +9,37 @@ const SignupForm = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const handleSignup = () => {
-    navigate("/otp", { state: { next: "/home" } });
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    const user = {
+      firstName,
+      lastName,
+      email,
+      password,
+      role: "Manager",
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+
+      if (response.ok) {
+        alert("Signup successful!");
+        navigate("/otp", { state: { next: "/home" } });
+      } else {
+        const error = await response.json();
+        alert("Signup failed: " + (error.message || "Please try again."));
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (
