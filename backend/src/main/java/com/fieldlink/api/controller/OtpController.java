@@ -38,7 +38,6 @@ public class OtpController {
 
         String otp = otpService.GenerateOtp(email, purpose);
 
-        System.out.println("Generated OTP for " + email + ": " + otp);
         return ResponseEntity.ok("OTP sent successfully for " + purpose);
     }
 
