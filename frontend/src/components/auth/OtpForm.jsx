@@ -6,9 +6,52 @@ const OtpForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleVerifyOtp = () => {
-    const next = location.state?.next || "/home";
-    navigate(next);
+  const { email, firstName, lastName, password, purpose, next } =
+    location.state || {};
+
+  const handleVerifyOtp = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/otp/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp, purpose }),
+      });
+
+      if (response.ok) {
+        if (purpose === "signup") {
+          const createUserResp = await fetch(
+            "http://localhost:8080/api/users/register",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                password,
+                role: "Manager",
+              }),
+            }
+          );
+
+          if (createUserResp.ok) {
+            alert("Signup successful!");
+            navigate(next || "/home");
+          } else {
+            alert("Failed to create user account.");
+          }
+        } else if (purpose === "login") {
+          navigate(next || "/home");
+        } else if (purpose === "forgot_password") {
+          navigate("/reset-password", { state: { email } });
+        }
+      } else {
+        alert("Invalid or expired OTP.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (
