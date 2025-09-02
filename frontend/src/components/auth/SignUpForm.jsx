@@ -12,32 +12,31 @@ const SignupForm = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    const user = {
-      firstName,
-      lastName,
-      email,
-      password,
-      role: "Manager",
-    };
-
     try {
-      const response = await fetch("http://localhost:8080/api/users/register", {
+      const response = await fetch("http://localhost:8080/api/otp/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify({ email, purpose: "signup" }),
       });
 
       if (response.ok) {
-        alert("Signup successful!");
-        navigate("/otp", { state: { next: "/home" } });
+        navigate("/otp", {
+          state: {
+            email,
+            firstName,
+            lastName,
+            password,
+            purpose: "signup",
+            next: "/home",
+          },
+        });
       } else {
-        const error = await response.json();
-        alert("Signup failed: " + (error.message || "Please try again."));
+        alert("Failed to send OTP. Try again.");
       }
     } catch (error) {
-      console.error("Error during signup:", error);
+      console.error("Error sending OTP:", error);
       alert("An error occurred. Please try again.");
     }
   };
