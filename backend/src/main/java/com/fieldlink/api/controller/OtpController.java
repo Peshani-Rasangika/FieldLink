@@ -36,7 +36,7 @@ public class OtpController {
             return ResponseEntity.badRequest().body("Invalid purpose");
         }
 
-        String otp = otpService.GenerateOtp(email);
+        String otp = otpService.GenerateOtp(email, purpose);
 
         System.out.println("Generated OTP for " + email + ": " + otp);
         return ResponseEntity.ok("OTP sent successfully for " + purpose);
