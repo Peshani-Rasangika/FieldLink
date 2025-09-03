@@ -40,7 +40,14 @@ const SignupForm = () => {
           },
         });
       } else {
-        alert("Failed to send OTP. Try again.");
+        const errorText = await response.text();
+        if (errorText.includes("already exists")) {
+          alert(
+            "An account with this email already exists. Please log in or use a different email."
+          );
+        } else {
+          alert("Failed to send OTP. Try again.");
+        }
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
