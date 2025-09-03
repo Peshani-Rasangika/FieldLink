@@ -12,34 +12,57 @@ const SignupForm = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    const user = {
-      firstName,
-      lastName,
-      email,
-      password,
-      role: "Manager",
-    };
+    if (!validatePassword(password)) {
+      alert(
+        "Password must be at least 8 characters, include uppercase, lowercase number and special character."
+      );
+      return;
+    }
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/register", {
+      const response = await fetch("http://localhost:8080/api/otp/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify({ email, purpose: "signup" }),
       });
 
       if (response.ok) {
-        alert("Signup successful!");
-        navigate("/otp", { state: { next: "/home" } });
+        navigate("/otp", {
+          state: {
+            email,
+            firstName,
+            lastName,
+            password,
+            purpose: "signup",
+            next: "/home",
+          },
+        });
       } else {
-        const error = await response.json();
-        alert("Signup failed: " + (error.message || "Please try again."));
+        const errorText = await response.text();
+        if (errorText.includes("already exists")) {
+          alert(
+            "An account with this email already exists. Please log in or use a different email."
+          );
+        } else {
+          alert("Failed to send OTP. Try again.");
+        }
       }
     } catch (error) {
-      console.error("Error during signup:", error);
+      console.error("Error sending OTP:", error);
       alert("An error occurred. Please try again.");
     }
+  };
+
+  const validatePassword = (password) => {
+    return (
+      password.length >= 8 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password) &&
+      /\d/.test(password) &&
+      /[^A-Za-z0-9]/.test(password)
+    );
   };
 
   return (
@@ -80,6 +103,10 @@ const SignupForm = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        <div className="text-xs text-gray-500 mt-1">
+          *Password must be at least 8 characters and include uppercase,
+          lowercase, special characters, and a number.
+        </div>
 
         <div className="text-sm text-gray-600">
           Already have an account?{" "}

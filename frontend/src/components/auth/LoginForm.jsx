@@ -7,8 +7,34 @@ const LoginForm = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const handleLogin = () => {
-    navigate("/otp", { state: { next: "/home" } });
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:8080/api/otp/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, purpose: "login" }),
+      });
+
+      if (response.ok) {
+        navigate("/otp", {
+          state: {
+            email,
+            password,
+            purpose: "login",
+            next: "/home",
+          },
+        });
+      } else {
+        alert("Failed to send OTP. Try again.");
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (
