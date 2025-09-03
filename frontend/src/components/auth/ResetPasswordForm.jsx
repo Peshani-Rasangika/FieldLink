@@ -12,6 +12,13 @@ const ResetPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
 
+    if (!validatePassword(newPassword)) {
+      alert(
+        "Password must be at least 8 characters, include uppercase, lowercase, number, and special character."
+      );
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       alert("Passwords do not match.");
       return;
@@ -36,6 +43,16 @@ const ResetPassword = () => {
     }
   };
 
+  const validatePassword = (password) => {
+    return (
+      password.length >= 8 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password) &&
+      /\d/.test(password) &&
+      /[^A-Za-z0-9]/.test(password)
+    );
+  };
+
   return (
     <>
       <h1 className="text-center text-blue-700 font-bold text-2xl md:text-3xl mb-8">
@@ -51,6 +68,10 @@ const ResetPassword = () => {
             onChange={(e) => setNewPassword(e.target.value)}
             required
           />
+          <div className="text-xs text-gray-500 mt-1">
+            *Password must be at least 8 characters and include uppercase,
+            lowercase, special character, and a number.
+          </div>
           <input
             className="rounded-lg p-3 w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="password"
