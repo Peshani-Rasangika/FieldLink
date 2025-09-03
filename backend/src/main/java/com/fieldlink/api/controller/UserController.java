@@ -18,7 +18,10 @@ public class UserController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        if (!userService.isPasswordValid(user.getPassword())) {
+            return ResponseEntity.badRequest().body("Password does not meet requirements.");
+        }
         User savedUser = userService.saveUser(user);
         return ResponseEntity.ok(savedUser);
     }
@@ -27,6 +30,10 @@ public class UserController {
     public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         String newPassword = request.get("newPassword");
+
+        if (!userService.isPasswordValid(newPassword)) {
+            return ResponseEntity.badRequest().body("Password does not meet requirements.");
+        }
 
         User user = userService.findByEmail(email);
         if (user == null) {
