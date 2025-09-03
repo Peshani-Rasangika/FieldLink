@@ -59,11 +59,12 @@ const OtpForm = () => {
       <h1 className="text-center text-blue-700 font-bold text-2xl md:text-3xl mb-8">
         Enter OTP
       </h1>
-      <div className="space-y-4">
+      <div className="space-y-4 text-center">
         <input
-          className="rounded-lg p-3 w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="rounded-lg p-3 w-25% border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-semibold text-xl tracking-widest w-[10ch]"
           type="text"
-          placeholder="Enter OTP"
+          maxLength={6}
+          placeholder="XXXXXX"
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
         />
